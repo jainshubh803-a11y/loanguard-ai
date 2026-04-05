@@ -152,13 +152,20 @@ if predict_btn:
     prob = xgb_model.predict_proba(user_data)[0][1]
     risk_pct = float(f"{prob * 100:.2f}")
 
+    # Risk category
+    if risk_pct < 20:
+        risk_level = "LOW RISK"
+    elif risk_pct < 50:
+        risk_level = "MODERATE RISK"
+    else:
+        risk_level = "HIGH RISK"
+
     st.markdown("---")
     st.markdown("## 📊 Your Risk Analysis")
 
     col_gauge, col_result, col_metrics = st.columns(3)
 
     with col_gauge:
-        # Gauge chart
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=risk_pct,
@@ -168,12 +175,11 @@ if predict_btn:
                 'axis': {'range': [0, 100], 'tickcolor': "white"},
                 'bar': {'color': "#ff4b4b" if risk_pct >= 50 else "#00c853"},
                 'bgcolor': "#1e2130",
-                
                 'steps': [
-    {'range': [0, 30], 'color': 'rgba(0, 200, 83, 0.2)'},
-    {'range': [30, 60], 'color': 'rgba(255, 165, 0, 0.2)'},
-    {'range': [60, 100], 'color': 'rgba(255, 75, 75, 0.2)'}
-],
+                    {'range': [0, 30], 'color': 'rgba(0, 200, 83, 0.2)'},
+                    {'range': [30, 60], 'color': 'rgba(255, 165, 0, 0.2)'},
+                    {'range': [60, 100], 'color': 'rgba(255, 75, 75, 0.2)'}
+                ],
                 'threshold': {
                     'line': {'color': "white", 'width': 2},
                     'thickness': 0.75,
@@ -263,17 +269,24 @@ Loan Application Details:
 
 ML Model predicted default risk: {risk_pct:.2f}%
 
+Risk Category Context:
+- Below 20% = LOW RISK = Strong candidate for loan approval
+- 20% to 50% = MODERATE RISK = Needs careful consideration
+- Above 50% = HIGH RISK = Likely to be rejected
+
+This applicant falls in: {risk_level} category.
+
 Provide analysis in this format:
 
-1. VERDICT: Should this loan be approved? One clear sentence.
+1. VERDICT: Based on {risk_level} category, should this loan be approved, conditionally approved, or rejected? One clear honest sentence.
 
-2. WHY THIS SCORE: Explain in simple words why the risk is high or low. Mention 2 specific numbers from their profile.
+2. WHY THIS SCORE: Explain why {risk_pct:.2f}% is good or concerning. Mention 2 specific numbers from their profile and what they mean.
 
-3. WHAT'S WORKING: Mention 1-2 positive things about their application.
+3. WHAT'S WORKING: Mention 1-2 genuine positive things about their application.
 
-4. HOW TO IMPROVE: Give 2 specific actionable steps to reduce their risk score. Be practical — mention exact numbers like "reduce loan amount to ₹X" or "build 6 months emergency fund".
+4. HOW TO IMPROVE: Give 2 very specific actionable steps with exact numbers — like "reduce loan amount from ₹{loan_amount} to ₹{int(loan_amount * 0.7)}" or "increase income by ₹X per month".
 
-5. FINAL ADVICE: One warm, encouraging sentence to end.
+5. FINAL ADVICE: One warm honest sentence — should they apply now or wait?
 
 Write like a helpful friend who works at a bank.
 Simple English, no jargon, under 150 words.
@@ -288,7 +301,7 @@ Simple English, no jargon, under 150 words.
 # Footer
 st.markdown("---")
 st.markdown("""
-<div style="text-align:center; color:red; font-size:12px">
+<div style="text-align:center; color:gray; font-size:12px">
     Built by Shubh Jain | XGBoost + LLaMA 3.1 | 
     <a href="https://github.com/jainshubh803-a11y/loanguard-ai" style="color:#667eea">GitHub</a>
 </div>
