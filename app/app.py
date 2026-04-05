@@ -153,9 +153,6 @@ user_data = pd.DataFrame({
     'age_income_ratio': [age_income_ratio]
 })
 
-# Show calculated grade to user
-st.info(f"📊 Based on your profile, your estimated Loan Grade is: **{grade}**")
-
 col_btn, col_empty = st.columns([1, 3])
 with col_btn:
     predict_btn = st.button("🔍 Analyze My Risk", use_container_width=True)
