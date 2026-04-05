@@ -248,28 +248,36 @@ if predict_btn:
     st.markdown("### 🤖 AI Explanation")
     with st.spinner("Analyzing your profile..."):
         prompt = f"""
-        You are a friendly financial advisor. A person has the following profile:
-        - Age: {age}
-        - Annual Income: ₹{annual_income}
-        - Employment Length: {emp_years} years
-        - Home Ownership: {home_own}
-        - Loan Amount: ₹{loan_amount}
-        - Loan Purpose: {loan_purpose}
-        - Loan Grade: {grade}
-        - Interest Rate: {interest_rate}%
-        - Previous Default: {prev_default}
-        - Credit History: {credit_years} years
-        - Loan to Income Ratio: {loan_to_income:.2f}
+You are a friendly credit analyst who explains loan decisions in simple terms that anyone can understand.
 
-        Our ML model predicted their loan default risk as {risk_pct:.2f}%.
+Loan Application Details:
+- Applicant Age: {age} years
+- Annual Income: ₹{annual_income}
+- Employment: {emp_years} years
+- Home Ownership: {home_own}
+- Loan Requested: ₹{loan_amount} for {loan_purpose}
+- Loan Grade: {grade} | Interest Rate: {interest_rate}%
+- Previous Default: {prev_default}
+- Credit History: {credit_years} years
+- Loan to Income Ratio: {loan_to_income:.2f}
 
-        In 3-4 simple sentences explain:
-        1. Why this risk score makes sense
-        2. Which 2-3 factors are most responsible
-        3. One practical tip to improve their financial health
+ML Model predicted default risk: {risk_pct:.2f}%
 
-        Be friendly, simple, and helpful. No technical jargon.
-        """
+Provide analysis in this format:
+
+1. VERDICT: Should this loan be approved? One clear sentence.
+
+2. WHY THIS SCORE: Explain in simple words why the risk is high or low. Mention 2 specific numbers from their profile.
+
+3. WHAT'S WORKING: Mention 1-2 positive things about their application.
+
+4. HOW TO IMPROVE: Give 2 specific actionable steps to reduce their risk score. Be practical — mention exact numbers like "reduce loan amount to ₹X" or "build 6 months emergency fund".
+
+5. FINAL ADVICE: One warm, encouraging sentence to end.
+
+Write like a helpful friend who works at a bank.
+Simple English, no jargon, under 150 words.
+"""
 
         reply = groq_client.chat.completions.create(
             model="llama-3.1-8b-instant",
