@@ -280,8 +280,8 @@ if predict_btn:
 # Footer
 st.markdown("---")
 st.markdown("""
-<div style="text-align:center; color:gray; font-size:12px">
-    Built by Mohit Jain | XGBoost + LLaMA 3.1 | 
+<div style="text-align:center; color:red; font-size:12px">
+    Built by Shubh Jain | XGBoost + LLaMA 3.1 | 
     <a href="https://github.com/jainshubh803-a11y/loanguard-ai" style="color:#667eea">GitHub</a>
 </div>
 """, unsafe_allow_html=True)
