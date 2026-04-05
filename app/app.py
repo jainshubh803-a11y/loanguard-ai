@@ -103,7 +103,7 @@ with col1:
 
 with col2:
     st.markdown("**Loan Details**")
-    loan_amount = st.number_input("Loan Amount (₹)", min_value=500, max_value=350000, value=10000)
+    loan_amount = st.number_input("Loan Amount (₹)", min_value=500, max_value=1100000, value=10000)
     interest_rate = st.number_input("Interest Rate (%)", min_value=5.0, max_value=20.0, value=10.0)
     loan_pct_income = st.number_input("Loan % of Income", min_value=0.0, max_value=0.83, value=0.2)
     loan_purpose = st.selectbox("Loan Purpose", ["PERSONAL", "EDUCATION", "MEDICAL", "VENTURE", "HOME IMPROVEMENT", "DEBT CONSOLIDATION"])
@@ -168,11 +168,12 @@ if predict_btn:
                 'axis': {'range': [0, 100], 'tickcolor': "white"},
                 'bar': {'color': "#ff4b4b" if risk_pct >= 50 else "#00c853"},
                 'bgcolor': "#1e2130",
+                
                 'steps': [
-                    {'range': [0, 30], 'color': '#00c85333'},
-                    {'range': [30, 60], 'color': '#ffa50033'},
-                    {'range': [60, 100], 'color': '#ff4b4b33'}
-                ],
+    {'range': [0, 30], 'color': 'rgba(0, 200, 83, 0.2)'},
+    {'range': [30, 60], 'color': 'rgba(255, 165, 0, 0.2)'},
+    {'range': [60, 100], 'color': 'rgba(255, 75, 75, 0.2)'}
+],
                 'threshold': {
                     'line': {'color': "white", 'width': 2},
                     'thickness': 0.75,
