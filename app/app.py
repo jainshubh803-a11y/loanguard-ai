@@ -6,7 +6,6 @@ import plotly.graph_objects as go
 
 st.set_page_config(page_title="LoanGuard AI", page_icon="🛡️", layout="wide")
 
-# Custom CSS
 st.markdown("""
 <style>
     .main { background-color: #0f1117; }
@@ -58,10 +57,8 @@ with col_info:
 
 st.markdown("---")
 
-# Groq client
 groq_client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# Model load
 @st.cache_resource
 def load_model():
     xgb = XGBClassifier()
@@ -70,7 +67,6 @@ def load_model():
 
 xgb_model = load_model()
 
-# Sidebar
 with st.sidebar:
     st.markdown("### 📋 About LoanGuard AI")
     st.markdown("""
@@ -89,7 +85,6 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("Built with XGBoost + LLaMA 3")
 
-# Input section
 st.markdown("### 📝 Enter Your Financial Details")
 
 col1, col2, col3 = st.columns(3)
@@ -110,7 +105,6 @@ with col2:
 
 with col3:
     st.markdown("**Credit History**")
-    grade = st.selectbox("Loan Grade", ["A", "B", "C", "D", "E", "F", "G"])
     prev_default = st.selectbox("Previous Default?", ["N", "Y"])
     credit_years = st.number_input("Credit History (years)", min_value=2, max_value=30, value=5)
 
@@ -122,9 +116,25 @@ purpose_enc = {"PERSONAL": 4, "EDUCATION": 1, "MEDICAL": 3, "VENTURE": 5, "HOME 
 grade_enc = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6}
 default_enc = {"N": 0, "Y": 1}
 
+# Auto calculate loan grade
 loan_to_income = loan_amount / annual_income
 interest_burden = (interest_rate / 100) * loan_amount / annual_income
 age_income_ratio = age / (annual_income / 10000)
+
+if loan_to_income < 0.1 and credit_years > 10:
+    grade = "A"
+elif loan_to_income < 0.2 and credit_years > 7:
+    grade = "B"
+elif loan_to_income < 0.3 and credit_years > 5:
+    grade = "C"
+elif loan_to_income < 0.4 and credit_years > 3:
+    grade = "D"
+elif loan_to_income < 0.6:
+    grade = "E"
+elif loan_to_income < 0.8:
+    grade = "F"
+else:
+    grade = "G"
 
 user_data = pd.DataFrame({
     'person_age': [age],
@@ -143,7 +153,9 @@ user_data = pd.DataFrame({
     'age_income_ratio': [age_income_ratio]
 })
 
-# Predict button
+# Show calculated grade to user
+st.info(f"📊 Based on your profile, your estimated Loan Grade is: **{grade}**")
+
 col_btn, col_empty = st.columns([1, 3])
 with col_btn:
     predict_btn = st.button("🔍 Analyze My Risk", use_container_width=True)
@@ -152,7 +164,6 @@ if predict_btn:
     prob = xgb_model.predict_proba(user_data)[0][1]
     risk_pct = float(f"{prob * 100:.2f}")
 
-    # Risk category
     if risk_pct < 20:
         risk_level = "LOW RISK"
     elif risk_pct < 50:
@@ -222,12 +233,11 @@ if predict_btn:
             <h3 style="color:#667eea">{loan_to_income:.2f}</h3>
             <p style="color:gray">Interest Burden</p>
             <h3 style="color:#667eea">{interest_burden:.4f}</h3>
-            <p style="color:gray">Loan Grade</p>
+            <p style="color:gray">Calculated Grade</p>
             <h3 style="color:#667eea">{grade}</h3>
         </div>
         """, unsafe_allow_html=True)
 
-    # Feature importance
     st.markdown("### 🔑 Top Risk Factors")
     feat_imp = pd.DataFrame({
         'Factor': user_data.columns,
@@ -250,7 +260,6 @@ if predict_btn:
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-    # AI Explanation
     st.markdown("### 🤖 AI Explanation")
     with st.spinner("Analyzing your profile..."):
         prompt = f"""
@@ -262,7 +271,7 @@ Loan Application Details:
 - Employment: {emp_years} years
 - Home Ownership: {home_own}
 - Loan Requested: ₹{loan_amount} for {loan_purpose}
-- Loan Grade: {grade} | Interest Rate: {interest_rate}%
+- Calculated Loan Grade: {grade} | Interest Rate: {interest_rate}%
 - Previous Default: {prev_default}
 - Credit History: {credit_years} years
 - Loan to Income Ratio: {loan_to_income:.2f}
@@ -298,7 +307,6 @@ Simple English, no jargon, under 150 words.
         )
         st.info(reply.choices[0].message.content)
 
-# Footer
 st.markdown("---")
 st.markdown("""
 <div style="text-align:center; color:gray; font-size:12px">
