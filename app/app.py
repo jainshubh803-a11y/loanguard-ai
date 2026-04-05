@@ -13,7 +13,7 @@ st.subheader("Check your loan default risk instantly")
 @st.cache_resource
 def load_model():
     xgb = XGBClassifier()
-    xgb.load_model(r'F:\financial-health-advisor\models\xgboost_model.json')
+    xgb.load_model('models/xgboost_model.json')
     return xgb
 
 xgb_model = load_model()
