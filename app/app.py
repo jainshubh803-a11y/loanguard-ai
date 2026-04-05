@@ -3,12 +3,7 @@ import streamlit as st
 import pandas as pd
 from xgboost import XGBClassifier
 from groq import Groq
-
-from dotenv import load_dotenv
-import os
-load_dotenv()
-
-groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+groq_client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 st.set_page_config(page_title="LoanGuard AI", page_icon="🛡️", layout="centered")
 st.title("🛡️ LoanGuard AI")
