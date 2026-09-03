@@ -299,7 +299,7 @@ Simple English, no jargon, under 150 words.
 """
 
         reply = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             messages=[{"role": "user", "content": prompt}]
         )
         st.info(reply.choices[0].message.content)
@@ -307,7 +307,7 @@ Simple English, no jargon, under 150 words.
 st.markdown("---")
 st.markdown("""
 <div style="text-align:center; color:gray; font-size:12px">
-    Built by Shubh Jain | XGBoost + LLaMA 3.1 | 
+    Built by Shubh Jain | XGBoost + GPT-OSS | 
     <a href="https://github.com/jainshubh803-a11y/loanguard-ai" style="color:#667eea">GitHub</a>
 </div>
 """, unsafe_allow_html=True)
